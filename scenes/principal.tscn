@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://bihbpw1jrmiyv"]
+
+[ext_resource type="Script" uid="uid://dcdcwp3n7r8gk" path="res://principal.gd" id="1_m7tbw"]
+[ext_resource type="PackedScene" uid="uid://cqemx4bfcdj5j" path="res://jogador.tscn" id="1_tr6oq"]
+[ext_resource type="PackedScene" uid="uid://dj8cqmvm8ey8f" path="res://inimigo.tscn" id="2_rrtif"]
+[ext_resource type="Texture2D" uid="uid://8bu2asqawosm" path="res://dodge_the_creeps_2d_assets/art/images.jpg" id="3_ep5lw"]
+[ext_resource type="PackedScene" uid="uid://bupdi4u6gd7ut" path="res://hud.tscn" id="4_7cuts"]
+[ext_resource type="AudioStream" uid="uid://drb1v773xcw76" path="res://dodge_the_creeps_2d_assets/art/House In a Forest Loop.ogg" id="6_jpj0s"]
+[ext_resource type="AudioStream" uid="uid://dmnaiokt2q4pj" path="res://dodge_the_creeps_2d_assets/art/gameover.wav" id="7_jpj0s"]
+
+[sub_resource type="Curve2D" id="Curve2D_tr6oq"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 7, 10, 0, 0, 0, 0, 472, 10, 0, 0, 0, 0, 473, 716, 0, 0, 0, 0, 5, 718, 0, 0, 0, 0, 7, 10)
+}
+point_count = 5
+
+[node name="Principal" type="Node" unique_id=1084675227]
+script = ExtResource("1_m7tbw")
+Inimigo = ExtResource("2_rrtif")
+
+[node name="background1" type="TextureRect" parent="." unique_id=218630126]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_ep5lw")
+
+[node name="jogador" parent="." unique_id=1563865430 instance=ExtResource("1_tr6oq")]
+position = Vector2(240, 450)
+
+[node name="inicioTimer" type="Timer" parent="." unique_id=168461818]
+wait_time = 2.0
+one_shot = true
+
+[node name="pontuacaoTimer" type="Timer" parent="." unique_id=2069468411]
+
+[node name="inimigoTimer" type="Timer" parent="." unique_id=1227445128]
+wait_time = 0.5
+
+[node name="PosicaoInicial" type="Marker2D" parent="." unique_id=1165951958]
+position = Vector2(240, 450)
+
+[node name="caminhoInimigo" type="Path2D" parent="." unique_id=1181575052]
+curve = SubResource("Curve2D_tr6oq")
+
+[node name="spawnInimigo" type="PathFollow2D" parent="caminhoInimigo" unique_id=1888058999]
+position = Vector2(7, 10)
+
+[node name="HUD" parent="." unique_id=1840408544 instance=ExtResource("4_7cuts")]
+
+[node name="Musica" type="AudioStreamPlayer2D" parent="." unique_id=2082614710]
+stream = ExtResource("6_jpj0s")
+
+[node name="somMorte" type="AudioStreamPlayer2D" parent="." unique_id=372278428]
+stream = ExtResource("7_jpj0s")
+
+[connection signal="hit" from="jogador" to="." method="game_over"]
+[connection signal="timeout" from="inicioTimer" to="." method="_on_inicio_timer_timeout"]
+[connection signal="timeout" from="pontuacaoTimer" to="." method="_on_pontuacao_timer_timeout"]
+[connection signal="timeout" from="inimigoTimer" to="." method="_on_inimigo_timer_timeout"]
+[connection signal="start_game" from="HUD" to="." method="novo_jogo"]
